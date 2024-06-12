@@ -6,13 +6,6 @@ pipeline {
         string(name: 'TERRAFORM_VERSION', defaultValue: '1.2.5', description: 'Version of Terraform to download')
     }
 
-    environment {
-        MAVEN_URL = "https://downloads.apache.org/maven/maven-3/${params.MAVEN_VERSION}/binaries/apache-maven-${params.MAVEN_VERSION}-bin.tar.gz"
-        MAVEN_HOME = "${env.WORKSPACE}/maven"
-
-        TERRAFORM_URL = "https://releases.hashicorp.com/terraform/${params.TERRAFORM_VERSION}/terraform_${params.TERRAFORM_VERSION}_linux_amd64.zip"
-        TERRAFORM_HOME = "${env.WORKSPACE}/terraform"
-    }
 
     stages {
         stage('Download Maven') {
