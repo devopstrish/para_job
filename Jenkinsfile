@@ -11,15 +11,15 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        echo "Changing directory to /var/lib/jenkins"
-                        cd /var/lib/jenkins
+                        echo "Changing directory to ${WORKSPACE}"
+                        cd ${WORKSPACE}
 
                         echo "Downloading Maven version ${MAVEN_VERSION}"
-                        sudo wget -q https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz -O apache-maven-${MAVEN_VERSION}-bin.tar.gz
+                        wget -q https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz -O apache-maven-${MAVEN_VERSION}-bin.tar.gz
 
                         echo "Extracting Maven"
-                        sudo tar -xzf apache-maven-${MAVEN_VERSION}-bin.tar.gz
-                        sudo rm apache-maven-${MAVEN_VERSION}-bin.tar.gz
+                        tar -xzf apache-maven-${MAVEN_VERSION}-bin.tar.gz
+                        rm apache-maven-${MAVEN_VERSION}-bin.tar.gz
                     '''
                 }
             }
@@ -29,19 +29,18 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        echo "Changing directory to /var/lib/jenkins"
-                        cd /var/lib/jenkins
+                        echo "Changing directory to ${WORKSPACE}"
+                        cd ${WORKSPACE}
 
                         echo "Downloading Terraform version ${TERRAFORM_VERSION}"
-                        sudo wget -q https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip -O terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+                        wget -q https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip -O terraform_${TERRAFORM_VERSION}_linux_amd64.zip
 
                         echo "Extracting Terraform"
-                        sudo unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip
-                        sudo rm terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+                        unzip -o terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+                        rm terraform_${TERRAFORM_VERSION}_linux_amd64.zip
                     '''
                 }
             }
         }
     }
 }
-
