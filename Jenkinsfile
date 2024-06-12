@@ -6,19 +6,22 @@ pipeline {
         string(name: 'TERRAFORM_VERSION', defaultValue: '1.2.5', description: 'Version of Terraform to download')
     }
 
-
     stages {
         stage('Download Maven') {
             steps {
                 script {
-                    // Download Maven
-                    sh """
-                        echo "Downloading Maven version ${params.MAVEN_VERSION}"
-                        curl -s -o maven.tar.gz ${MAVEN_URL}
-                        tar -xzf maven.tar.gz
-                        mv apache-maven-${params.MAVEN_VERSION} ${MAVEN_HOME}
-                        rm maven.tar.gz
-                    """
+                    sh '''
+                        echo "Downloading Maven version ${MAVEN_VERSION}"
+                        sudo wget -q https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz -O /tmp/maven.tar.gz
+                        if file /tmp/maven.tar.gz | grep -q gzip; then
+                            sudo mkdir -p /opt/maven
+                            sudo tar -xzf /tmp/maven.tar.gz -C /opt/maven --strip-components=1
+                            sudo rm /tmp/maven.tar.gz
+                        else
+                            echo "Downloaded file is not a valid gzip archive"
+                            exit 1
+                        fi
+                    '''
                 }
             }
         }
@@ -26,16 +29,34 @@ pipeline {
         stage('Download Terraform') {
             steps {
                 script {
-                    // Download Terraform
-                    sh """
-                        echo "Downloading Terraform version ${params.TERRAFORM_VERSION}"
-                        curl -s -o terraform.zip ${TERRAFORM_URL}
-                        unzip terraform.zip -d ${TERRAFORM_HOME}
-                        rm terraform.zip
-                    """
+                    sh '''
+                        echo "Downloading Terraform version ${TERRAFORM_VERSION}"
+                        sudo wget -q https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip -O /tmp/terraform.zip
+                        if file /tmp/terraform.zip | grep -q 'Zip archive data'; then
+                            sudo mkdir -p /opt/terraform
+                            sudo unzip /tmp/terraform.zip -d /opt/terraform
+                            sudo rm /tmp/terraform.zip
+                        else
+                            echo "Downloaded file is not a valid zip archive"
+                            exit 1
+                        fi
+                    '''
                 }
             }
         }
 
+        stage('Verify Installation') {
+            steps {
+                script {
+                    sh '''
+                        echo "Verifying Maven installation"
+                        /opt/maven/bin/mvn -version
+
+                        echo "Verifying Terraform installation"
+                        /opt/terraform/terraform -version
+                    '''
+                }
+            }
+        }
     }
 }
