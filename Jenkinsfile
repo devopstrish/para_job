@@ -6,25 +6,7 @@ pipeline {
         string(name: 'TERRAFORM_VERSION', defaultValue: '1.2.5', description: 'Version of Terraform to download')
     }
 
-    stages {
-        stage('Download Maven') {
-            steps {
-                script {
-                    sh '''
-                        echo "Changing directory to ${WORKSPACE}"
-                        cd ${WORKSPACE}
-
-                        echo "Downloading Maven version ${MAVEN_VERSION}"
-                        wget -q https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz -O apache-maven-${MAVEN_VERSION}-bin.tar.gz
-
-                        echo "Extracting Maven"
-                        tar -xzf apache-maven-${MAVEN_VERSION}-bin.tar.gz
-                        rm apache-maven-${MAVEN_VERSION}-bin.tar.gz
-                    '''
-                }
-            }
-        }
-
+    
         stage('Download Terraform') {
             steps {
                 script {
