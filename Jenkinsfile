@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     parameters {
-        string(name: 'MAVEN_VERSION', defaultValue: '3.8.6', description: 'Version of Maven to download')
+       
         string(name: 'TERRAFORM_VERSION', defaultValue: '1.2.5', description: 'Version of Terraform to download')
     }
 
