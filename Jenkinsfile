@@ -2,27 +2,30 @@ pipeline {
     agent any
 
     parameters {
-       
-        string(name: 'TERRAFORM_VERSION', defaultValue: '1.2.5', description: 'Version of Terraform to download')
+        choice(name: 'ENVIRONMENT', choices: ['DEV', 'QA', 'PROD'], description: 'Select the environment')
+        string(name: 'VERSION', defaultValue: '1.0', description: 'Enter the version number')
     }
 
-    
-        stage('Download Terraform') {
+    stages {
+        stage('Build') {
             steps {
-                script {
-                    sh '''
-                        echo "Changing directory to ${WORKSPACE}"
-                        cd ${WORKSPACE}
-
-                        echo "Downloading Terraform version ${TERRAFORM_VERSION}"
-                        wget -q https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip -O terraform_${TERRAFORM_VERSION}_linux_amd64.zip
-
-                        echo "Extracting Terraform"
-                        unzip -o terraform_${TERRAFORM_VERSION}_linux_amd64.zip
-                        rm terraform_${TERRAFORM_VERSION}_linux_amd64.zip
-                    '''
-                }
+                echo "Building version ${params.VERSION} for ${params.ENVIRONMENT} environment"
+                // Add your build steps here
             }
         }
-    
+
+        stage('Test') {
+            steps {
+                echo "Running tests for version ${params.VERSION} in ${params.ENVIRONMENT} environment"
+                // Add your test steps here
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo "Deploying version ${params.VERSION} to ${params.ENVIRONMENT} environment"
+                // Add your deployment steps here
+            }
+        }
+    }
 }
